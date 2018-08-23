@@ -131,12 +131,12 @@ object ICommand {
 
   case class Assign(name: String, e: IExpr, op: Option[IOp]) extends ICommand
 
-  case class Eq(name: String, e: IExpr) extends ICommand
-  case class Neq(name: String, e: IExpr) extends ICommand
-  case class Lt(name: String, e: IExpr) extends ICommand
-  case class Le(name: String, e: IExpr) extends ICommand
-  case class Gt(name: String, e: IExpr) extends ICommand
-  case class Ge(name: String, e: IExpr) extends ICommand
+  case class Eq(l: IExpr, r: IExpr) extends ICommand
+  case class Neq(l: IExpr, r: IExpr) extends ICommand
+  case class Lt(l: IExpr, r: IExpr) extends ICommand
+  case class Le(l: IExpr, r: IExpr) extends ICommand
+  case class Gt(l: IExpr, r: IExpr) extends ICommand
+  case class Ge(l: IExpr, r: IExpr) extends ICommand
 
 }
 

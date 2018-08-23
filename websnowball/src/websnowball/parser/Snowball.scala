@@ -63,20 +63,30 @@ object Snowball {
     }
 
     val command: P[ICommand] = P(
-      ref ~ (
-        "==" ~/ expr.map(e => (ref: String) => ICommand.Eq(ref, e))
-          | "!=" ~/ expr.map(e => (ref: String) => ICommand.Neq(ref, e))
-          | "<=" ~/ expr.map(e => (ref: String) => ICommand.Le(ref, e))
-          | "<" ~/ expr.map(e => (ref: String) => ICommand.Lt(ref, e))
-          | ">=" ~/ expr.map(e => (ref: String) => ICommand.Ge(ref, e))
-          | ">" ~/ expr.map(e => (ref: String) => ICommand.Gt(ref, e))
+      "$(" ~/ (expr ~ (
+        "==" ~/ expr.map(e => (l: IExpr) => ICommand.Eq(l, e))
+          | "!=" ~/ expr.map(e => (l: IExpr) => ICommand.Neq(l, e))
+          | "<=" ~/ expr.map(e => (l: IExpr) => ICommand.Le(l, e))
+          | "<" ~/ expr.map(e => (l: IExpr) => ICommand.Lt(l, e))
+          | ">=" ~/ expr.map(e => (l: IExpr) => ICommand.Ge(l, e))
+          | ">" ~/ expr.map(e => (l: IExpr) => ICommand.Gt(l, e))
+        )).map {
+          case (l, f) => f(l)
+        }~ ")"
+      | (ref ~ (
+        "==" ~/ expr.map(e => (ref: String) => ICommand.Eq(IExpr.Name(ref), e))
+          | "!=" ~/ expr.map(e => (ref: String) => ICommand.Neq(IExpr.Name(ref), e))
+          | "<=" ~/ expr.map(e => (ref: String) => ICommand.Le(IExpr.Name(ref), e))
+          | "<" ~/ expr.map(e => (ref: String) => ICommand.Lt(IExpr.Name(ref), e))
+          | ">=" ~/ expr.map(e => (ref: String) => ICommand.Ge(IExpr.Name(ref), e))
+          | ">" ~/ expr.map(e => (ref: String) => ICommand.Gt(IExpr.Name(ref), e))
           | "=" ~/ expr.map(e => (ref: String) => ICommand.Assign(ref, e, None))
           | "+=" ~/ expr.map(e => (ref: String) => ICommand.Assign(ref, e, Some(IOp.Plus)))
           | "-=" ~/ expr.map(e => (ref: String) => ICommand.Assign(ref, e, Some(IOp.Minus)))
           | "*=" ~/ expr.map(e => (ref: String) => ICommand.Assign(ref, e, Some(IOp.Star)))
       )).map {
       case (r, f) => f(r)
-    }
+    })
 
   }
 
